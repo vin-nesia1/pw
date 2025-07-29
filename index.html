@@ -922,22 +922,21 @@
                 chars += characterSets.symbols;
             }
 
-            // Hapus karakter yang mirip jika opsi enabled
+            // Remove similar characters if option is enabled
             if (document.getElementById('similar').checked) {
                 chars = chars.split('').filter(char => !similarChars.includes(char)).join('');
             }
 
-            // Hapus karakter ambigu jika opsi enabled
+            // Remove ambiguous characters if option is enabled
             if (document.getElementById('ambiguous').checked) {
                 chars = chars.split('').filter(char => !ambiguousChars.includes(char)).join('');
             }
 
-            // Fallback jika tidak ada karakter tersisa
-            return chars || (characterSets.lowercase + characterSets.uppercase);
+            return chars;
         }
 
         function generateSecurePassword(length, characters) {
-            if (!characters || length < 1) return '';
+            if (!characters) return '';
             
             let password = '';
             const array = new Uint32Array(length);
@@ -989,7 +988,7 @@
         }
 
         function updateStrengthIndicator(password) {
-            const result = calculatePasswordStrength(password || '');
+            const result = calculatePasswordStrength(password);
             const bars = strengthBars.querySelectorAll('.strength-bar');
             
             // Reset all bars
@@ -1017,6 +1016,7 @@
                 await navigator.clipboard.writeText(text);
                 return true;
             } catch (err) {
+                // Fallback for older browsers
                 const textArea = document.createElement('textarea');
                 textArea.value = text;
                 textArea.style.position = 'fixed';
@@ -1041,28 +1041,28 @@
                 optionItem.classList.remove('active');
             }
 
-            // Hanya periksa opsi wajib untuk lowercase, uppercase, numbers, symbols
+            // Ensure at least one character type is selected
             const requiredOptions = ['lowercase', 'uppercase', 'numbers', 'symbols'];
-            if (requiredOptions.includes(optionId)) {
-                const selectedCount = requiredOptions.filter(id => document.getElementById(id).checked).length;
-                if (selectedCount === 0) {
-                    checkbox.checked = true;
-                    optionItem.classList.add('active');
-                    alert('At least one character type must be selected!');
-                    return;
-                }
-            }
-
-            // Perbarui password jika ada perubahan
-            if (currentPassword) {
-                generateBtn.click();
+            const selectedCount = requiredOptions.filter(id => document.getElementById(id).checked).length;
+            
+            if (selectedCount === 0) {
+                // Re-enable the option that was just disabled
+                checkbox.checked = true;
+                optionItem.classList.add('active');
+                alert('At least one character type must be selected!');
             }
         }
 
+        // Validate inputs and generate password
         function generateNewPassword() {
             const characters = getSelectedCharacters();
             const length = parseInt(lengthSlider.value);
             
+            if (!characters) {
+                alert('Please select at least one character type!');
+                return null;
+            }
+
             if (length < 4) {
                 alert('Password length must be at least 4 characters!');
                 return null;
@@ -1076,10 +1076,12 @@
             lengthDisplay.textContent = e.target.value;
         });
 
+        // Enhanced password generation with validation
         generateBtn.addEventListener('click', () => {
             generateBtn.disabled = true;
             generateBtn.innerHTML = '<div class="loading">🔐 Generating...</div>';
             
+            // Validate and generate
             const newPassword = generateNewPassword();
             if (!newPassword) {
                 generateBtn.disabled = false;
@@ -1087,6 +1089,7 @@
                 return;
             }
             
+            // Add current password to history before generating new one
             if (currentPassword) {
                 passwordHistory.push(currentPassword);
                 if (passwordHistory.length > 10) {
@@ -1095,17 +1098,28 @@
             }
 
             setTimeout(() => {
+                // Set new password
                 currentPassword = newPassword;
                 passwordOutput.textContent = currentPassword;
                 passwordOutput.classList.add('has-password');
+                
+                // Update strength indicator
                 updateStrengthIndicator(currentPassword);
+                
+                // Show action buttons
                 copyBtn.style.display = 'inline-block';
                 regenerateBtn.style.display = 'inline-block';
                 
+                // Auto-copy to clipboard
                 copyToClipboard(currentPassword).then(success => {
-                    if (success) showCopyIndicator();
-                }).catch(err => console.log('Auto-copy failed:', err));
+                    if (success) {
+                        showCopyIndicator();
+                    }
+                }).catch(err => {
+                    console.log('Auto-copy failed:', err);
+                });
                 
+                // Update button state
                 generateBtn.innerHTML = '✅ Password Generated!';
                 generateBtn.classList.add('pulse');
                 
@@ -1114,9 +1128,11 @@
                     generateBtn.disabled = false;
                     generateBtn.classList.remove('pulse');
                 }, 1500);
+                
             }, 300);
         });
 
+        // Enhanced copy functionality
         copyBtn.addEventListener('click', async () => {
             if (!currentPassword) {
                 alert('No password to copy! Please generate a password first.');
@@ -1137,12 +1153,15 @@
             } catch (error) {
                 console.error('Copy failed:', error);
                 copyBtn.innerHTML = '❌ Copy Failed';
+                
+                // Show manual copy fallback
                 const textarea = document.createElement('textarea');
                 textarea.value = currentPassword;
                 textarea.style.position = 'fixed';
                 textarea.style.left = '-9999px';
                 document.body.appendChild(textarea);
                 textarea.select();
+                
                 try {
                     document.execCommand('copy');
                     copyBtn.innerHTML = '✅ Copied!';
@@ -1150,6 +1169,7 @@
                 } catch (fallbackError) {
                     alert('Copy failed. Please manually select and copy the password.');
                 }
+                
                 document.body.removeChild(textarea);
             }
             
@@ -1159,6 +1179,7 @@
             }, 2000);
         });
 
+        // Enhanced regenerate functionality
         regenerateBtn.addEventListener('click', () => {
             if (regenerateBtn.disabled) return;
             
@@ -1174,12 +1195,15 @@
             }, 200);
         });
 
+        // Enhanced password output click functionality
         passwordOutput.addEventListener('click', async () => {
             if (!currentPassword) {
+                // If no password, generate one
                 generateBtn.click();
                 return;
             }
             
+            // Add visual feedback
             passwordOutput.style.transform = 'scale(0.98)';
             passwordOutput.style.transition = 'transform 0.1s ease';
             
@@ -1189,12 +1213,15 @@
             
             try {
                 const success = await copyToClipboard(currentPassword);
-                if (success) showCopyIndicator();
+                if (success) {
+                    showCopyIndicator();
+                }
             } catch (error) {
                 console.error('Click-to-copy failed:', error);
             }
         });
 
+        // Add hover effect for password output
         passwordOutput.addEventListener('mouseenter', () => {
             if (currentPassword) {
                 passwordOutput.style.cursor = 'pointer';
@@ -1206,31 +1233,52 @@
             passwordOutput.style.cursor = 'default';
         });
 
+        // Enhanced keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            // Prevent shortcuts when typing in inputs
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
 
+            // Space or Enter to generate
             if (e.code === 'Space' || e.key === 'Enter') {
                 e.preventDefault();
-                if (!generateBtn.disabled) generateBtn.click();
+                if (!generateBtn.disabled) {
+                    generateBtn.click();
+                }
             }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'c' && currentPassword && !copyBtn.disabled) {
+
+            // Ctrl/Cmd + C to copy
+            if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
                 e.preventDefault();
-                copyBtn.click();
+                if (currentPassword && !copyBtn.disabled) {
+                    copyBtn.click();
+                }
             }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'r' && currentPassword && !regenerateBtn.disabled) {
+
+            // Ctrl/Cmd + R to regenerate
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
                 e.preventDefault();
-                regenerateBtn.click();
+                if (currentPassword && !regenerateBtn.disabled) {
+                    regenerateBtn.click();
+                }
             }
+
+            // Number keys to set length quickly (Ctrl + 1-9)
             if (e.key >= '1' && e.key <= '9' && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
-                const length = Math.min(parseInt(e.key) * 4, 128);
+                const length = Math.min(parseInt(e.key) * 4, 128); // 1=4, 2=8, 3=12, etc.
                 lengthSlider.value = length;
                 lengthDisplay.textContent = length;
             }
+
+            // Quick preset shortcuts (Alt + 1-4)
             if (e.altKey && e.key >= '1' && e.key <= '4') {
                 e.preventDefault();
                 applyPreset(parseInt(e.key) - 1);
             }
+
+            // Escape to reset (clear password)
             if (e.key === 'Escape') {
                 currentPassword = '';
                 passwordOutput.innerHTML = '<span class="password-placeholder">Your secure password will appear here...</span>';
@@ -1241,6 +1289,7 @@
             }
         });
 
+        // Enhanced preset system
         function applyPreset(presetIndex) {
             const presets = [
                 { name: 'Basic', length: 8, options: ['lowercase', 'uppercase', 'numbers'] },
@@ -1253,6 +1302,7 @@
 
             const preset = presets[presetIndex];
             
+            // Reset all checkboxes first
             ['lowercase', 'uppercase', 'numbers', 'symbols', 'similar', 'ambiguous'].forEach(id => {
                 const checkbox = document.getElementById(id);
                 const optionItem = checkbox.closest('.option-item');
@@ -1260,6 +1310,7 @@
                 optionItem.classList.remove('active');
             });
             
+            // Apply preset options
             preset.options.forEach(option => {
                 const checkbox = document.getElementById(option);
                 const optionItem = checkbox.closest('.option-item');
@@ -1267,9 +1318,11 @@
                 optionItem.classList.add('active');
             });
             
+            // Set length
             lengthSlider.value = preset.length;
             lengthDisplay.textContent = preset.length;
             
+            // Visual feedback
             const toast = document.createElement('div');
             toast.innerHTML = `✅ Applied ${preset.name} preset`;
             toast.style.cssText = `
@@ -1288,10 +1341,12 @@
             
             setTimeout(() => {
                 toast.remove();
+                // Auto-generate password with new preset
                 generateBtn.click();
             }, 1500);
         }
 
+        // Enhanced preset activation (double-click title)
         let clickCount = 0;
         document.querySelector('h2').addEventListener('click', () => {
             clickCount++;
@@ -1379,6 +1434,7 @@
             
             document.body.appendChild(modal);
             
+            // Add global functions
             window.selectPreset = (index) => {
                 applyPreset(index);
                 modal.remove();
@@ -1392,11 +1448,15 @@
                 delete window.closePresetDialog;
             };
             
+            // Close on background click
             modal.addEventListener('click', (e) => {
-                if (e.target === modal) window.closePresetDialog();
+                if (e.target === modal) {
+                    window.closePresetDialog();
+                }
             });
         }
 
+        // Enhanced password strength analysis
         strengthText.addEventListener('click', () => {
             if (currentPassword) {
                 showPasswordAnalysis(currentPassword);
@@ -1457,8 +1517,11 @@
             modal.className = 'modal';
             document.body.appendChild(modal);
             
+            // Close on background click
             modal.addEventListener('click', (e) => {
-                if (e.target === modal) modal.remove();
+                if (e.target === modal) {
+                    modal.remove();
+                }
             });
         }
 
@@ -1467,6 +1530,7 @@
             const strength = calculatePasswordStrength(password);
             
             analysis.push(`<div style="margin-bottom: 1rem;"><strong>Overall Strength:</strong> <span style="color: ${strength.className === 'strength-strong' ? '#00f5a0' : strength.className === 'strength-good' ? '#66bb6a' : strength.className === 'strength-fair' ? '#ffa726' : '#ff6b6b'};">${strength.strength}</span></div>`);
+            
             analysis.push(`<div style="margin-bottom: 1rem;"><strong>Length:</strong> ${password.length} characters</div>`);
             
             const hasLower = /[a-z]/.test(password);
@@ -1484,9 +1548,11 @@
             const uniqueness = (uniqueChars / password.length * 100).toFixed(1);
             analysis.push(`<div style="margin: 1rem 0;"><strong>Character Uniqueness:</strong> ${uniqueChars}/${password.length} (${uniqueness}%)</div>`);
             
+            // Estimate crack time
             const charset = (hasLower ? 26 : 0) + (hasUpper ? 26 : 0) + (hasNumbers ? 10 : 0) + (hasSymbols ? 32 : 0);
             const combinations = Math.pow(charset, password.length);
             let crackTime = 'Unknown';
+            
             if (combinations > 1e20) crackTime = 'Billions of years';
             else if (combinations > 1e15) crackTime = 'Millions of years';
             else if (combinations > 1e12) crackTime = 'Thousands of years';
@@ -1497,6 +1563,7 @@
             
             analysis.push(`<div style="margin: 1rem 0;"><strong>Estimated crack time:</strong> ${crackTime}</div>`);
             
+            // Security recommendations
             analysis.push('<div style="margin: 1rem 0;"><strong>Recommendations:</strong></div>');
             if (password.length < 12) analysis.push('<div style="margin-left: 1rem; color: #ffa726;">• Consider using at least 12 characters</div>');
             if (!hasSymbols) analysis.push('<div style="margin-left: 1rem; color: #ffa726;">• Add special characters for better security</div>');
@@ -1506,10 +1573,13 @@
             return analysis.join('');
         }
 
+        // Enhanced initialization
         function initializePasswordGenerator() {
+            // Set default state
             lengthSlider.value = 16;
             lengthDisplay.textContent = '16';
             
+            // Ensure default options are checked
             ['lowercase', 'uppercase', 'numbers', 'symbols'].forEach(id => {
                 const checkbox = document.getElementById(id);
                 const optionItem = checkbox.closest('.option-item');
@@ -1519,13 +1589,16 @@
                 }
             });
             
+            // Generate initial password after short delay
             setTimeout(() => {
                 generateBtn.click();
             }, 1000);
         }
 
+        // Enhanced error handling
         function handleError(error, context) {
             console.error(`Error in ${context}:`, error);
+            
             const errorToast = document.createElement('div');
             errorToast.innerHTML = `❌ ${context} failed. Please try again.`;
             errorToast.style.cssText = `
@@ -1541,11 +1614,16 @@
                 animation: slideIn 0.3s ease-out;
             `;
             document.body.appendChild(errorToast);
-            setTimeout(() => errorToast.remove(), 3000);
+            
+            setTimeout(() => {
+                errorToast.remove();
+            }, 3000);
         }
 
+        // Initialize the password generator
         initializePasswordGenerator();
 
+        // Add additional keyboard shortcuts info
         console.log('🔐 Enhanced Password Generator Shortcuts:');
         console.log('Space/Enter: Generate password');
         console.log('Ctrl/Cmd + C: Copy password');
@@ -1557,6 +1635,7 @@
         console.log('Click strength indicator: Show detailed analysis');
         console.log('Click password: Copy to clipboard');
         
+        // Add help tooltip
         const helpTooltip = document.createElement('div');
         helpTooltip.innerHTML = '❓';
         helpTooltip.style.cssText = `
@@ -1587,6 +1666,7 @@
                         <li>Double-click title for presets</li>
                         <li>Click strength meter for analysis</li>
                     </ul>
+                    
                     <p><strong>Keyboard Shortcuts:</strong></p>
                     <ul style="margin: 0.5rem 0 1rem 1rem;">
                         <li><kbd>Space</kbd> or <kbd>Enter</kbd> - Generate</li>
@@ -1596,6 +1676,7 @@
                         <li><kbd>Alt+1-4</kbd> - Apply presets</li>
                         <li><kbd>Escape</kbd> - Clear password</li>
                     </ul>
+                    
                     <p><strong>Security Tips:</strong></p>
                     <ul style="margin: 0.5rem 0 1rem 1rem;">
                         <li>Use unique passwords for each account</li>
@@ -1653,7 +1734,9 @@
             document.body.appendChild(modal);
             
             modal.addEventListener('click', (e) => {
-                if (e.target === modal) modal.remove();
+                if (e.target === modal) {
+                    modal.remove();
+                }
             });
         });
         
@@ -1669,7 +1752,9 @@
         
         document.body.appendChild(helpTooltip);
 
+        // Clean up any potential memory leaks
         window.addEventListener('beforeunload', () => {
+            // Clear any intervals or timeouts
             passwordHistory.length = 0;
             currentPassword = '';
         });
