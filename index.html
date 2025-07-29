@@ -670,16 +670,30 @@
         }
 
         .instagram-icon {
-            font-size: 1.2rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
             width: 32px;
             height: 32px;
             border-radius: 50%;
             background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            color: white;
+            padding: 4px;
             margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .instagram-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .instagram-link:hover {
+            color: var(--secondary-color);
+            text-shadow: 0 0 8px rgba(0, 245, 160, 0.5);
+        }
+
+        .instagram-link:hover .instagram-icon {
+            transform: scale(1.1);
         }
 
         /* Modal Styles */
@@ -942,6 +956,9 @@
                 <div class="copy-indicator" id="copyIndicator" role="alert">Copied to Clipboard! ✓</div>
             </div>
 
+            <!-- Password History Toggle Button -->
+            <button class="history-btn" id="toggleHistoryBtn" aria-label="Show password history">📜 Show History</button>
+
             <!-- Password History -->
             <div class="password-history" id="passwordHistory" style="display: none;">
                 <div class="history-title">📜 Password History</div>
@@ -1077,27 +1094,17 @@
                     <div class="tip-item">
                         <span class="tip-icon">📱</span>
                         <div class="tip-title">Enable 2FA</div>
-                        <div class="tip-description">Use two-factor authentication whenever possible for an extra layer of security beyond just passwords.</div>
+                        <div class="tip-description">Use Two-Factor Authentication (2FA) whenever possible to add an extra layer of security.</div>
                     </div>
                     <div class="tip-item">
-                        <span class="tip-icon">🗂️</span>
-                        <div class="tip-title">Use Password Manager</div>
-                        <div class="tip-description">Store your passwords in a reputable password manager to keep them secure and easily accessible.</div>
-                    </div>
-                    <div class="tip-item">
-                        <span class="tip-icon">🔄</span>
+                        <span class="tip-icon">🛠️</span>
                         <div class="tip-title">Regular Updates</div>
-                        <div class="tip-description">Change passwords regularly, especially for important accounts like banking and email services.</div>
+                        <div class="tip-description">Update your passwords regularly and avoid using predictable patterns or personal information.</div>
                     </div>
                     <div class="tip-item">
-                        <span class="tip-icon">🚫</span>
-                        <div class="tip-title">Avoid Personal Info</div>
-                        <div class="tip-description">Never use personal information like birthdays, names, or addresses in your passwords.</div>
-                    </div>
-                    <div class="tip-item">
-                        <span class="tip-icon">📏</span>
-                        <div class="tip-title">Length Matters</div>
-                        <div class="tip-description">Longer passwords are generally more secure. Aim for at least 12-16 characters when possible.</div>
+                        <span class="tip-icon">💾</span>
+                        <div class="tip-title">Password Manager</div>
+                        <div class="tip-description">Use a trusted password manager to securely store and manage your passwords.</div>
                     </div>
                 </div>
             </div>
@@ -1113,7 +1120,16 @@
             
             <div class="contact-info">
                 <div>📧 <a href="mailto:support@vinnesia.my.id">support@vinnesia.my.id</a></div>
-                <div><i class="fab fa-instagram instagram-icon" aria-hidden="true"></i> <a href="https://instagram.com/vin.nesia.id">@vin.nesia.id</a></div>
+                <div>
+                    <a href="https://instagram.com/vin.nesia.id" aria-label="Follow us on Instagram" class="instagram-link">
+                        <svg class="instagram-icon" viewBox="0 0 24 24" width="24" height="24" fill="white" aria-hidden="true">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.326 3.608 1.301.975.975 1.24 2.242 1.301 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.326 2.633-1.301 3.608-.975.975-2.242 1.24-3.608 1.301-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.326-3.608-1.301-.975-.975-1.24-2.242-1.301-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.326-2.633 1.301-3.608.975-.975 2.242-1.24 3.608-1.301 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-1.543.07-3.066.683-4.213 1.83C1.683 3.049 1.07 4.572 1 6.115c-.058 1.28-.072 1.688-.072 4.947s.014 3.667.072 4.947c.07 1.543.683 3.066 1.83 4.213 1.147 1.147 2.67 1.76 4.213 1.83 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c1.543-.07 3.066-.683 4.213-1.83 1.147-1.147 1.76-2.67 1.83-4.213.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.07-1.543-.683-3.066-1.83-4.213-1.147-1.147-2.67-1.76-4.213-1.83-1.28-.058-1.688-.072-4.947-.072z"/>
+                            <path d="M12 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162S15.403 5.838 12 5.838zm0 10.162c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4z"/>
+                            <circle cx="18.406" cy="5.594" r="1.44"/>
+                        </svg>
+                        @vin.nesia.id
+                    </a>
+                </div>
                 <div>💬 WhatsApp: +62 895-3545-11777</div>
                 <div>📍 Indonesia</div>
             </div>
@@ -1122,10 +1138,10 @@
         </div>
     </footer>
 
-    <div class="help-tooltip" id="helpTooltip" role="button" tabindex="0" aria-label="View help and shortcuts">❓</div>
+    <!-- Help Tooltip -->
+    <div class="help-tooltip" id="helpTooltip" role="button" tabindex="0" aria-label="Open help dialog">❓</div>
 
     <script>
-        // Password Generator Class
         class PasswordGenerator {
             constructor() {
                 // DOM Elements
@@ -1144,7 +1160,8 @@
                     optionItems: document.querySelectorAll('.option-item'),
                     passwordHistory: document.getElementById('passwordHistory'),
                     historyList: document.getElementById('historyList'),
-                    clearHistoryBtn: document.getElementById('clearHistoryBtn')
+                    clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+                    toggleHistoryBtn: document.getElementById('toggleHistoryBtn')
                 };
 
                 // Character Sets
@@ -1181,7 +1198,7 @@
             }
 
             bindEvents() {
-                const { lengthSlider, lengthDisplay, passwordOutput, generateBtn, copyBtn, regenerateBtn, strengthText, title, helpTooltip, optionItems, clearHistoryBtn } = this.elements;
+                const { lengthSlider, lengthDisplay, passwordOutput, generateBtn, copyBtn, regenerateBtn, strengthText, title, helpTooltip, optionItems, clearHistoryBtn, toggleHistoryBtn } = this.elements;
 
                 lengthSlider.addEventListener('input', () => {
                     lengthDisplay.textContent = lengthSlider.value;
@@ -1194,6 +1211,7 @@
                 strengthText.addEventListener('click', () => this.showPasswordAnalysis());
                 helpTooltip.addEventListener('click', () => this.showHelpDialog());
                 clearHistoryBtn.addEventListener('click', () => this.clearHistory());
+                toggleHistoryBtn.addEventListener('click', () => this.toggleHistory());
 
                 passwordOutput.addEventListener('click', () => this.handlePasswordOutputClick());
                 passwordOutput.addEventListener('mouseenter', () => {
@@ -1228,6 +1246,14 @@
                 });
 
                 document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
+            }
+
+            toggleHistory() {
+                const { passwordHistory, toggleHistoryBtn } = this.elements;
+                const isHidden = passwordHistory.style.display === 'none';
+                passwordHistory.style.display = isHidden ? 'block' : 'none';
+                toggleHistoryBtn.textContent = isHidden ? '📜 Hide History' : '📜 Show History';
+                toggleHistoryBtn.setAttribute('aria-label', isHidden ? 'Hide password history' : 'Show password history');
             }
 
             getSelectedCharacters() {
@@ -1308,7 +1334,6 @@
                 const { passwordHistory, historyList } = this.elements;
                 historyList.innerHTML = '';
                 if (this.passwordHistory.length > 0) {
-                    passwordHistory.style.display = 'block';
                     this.passwordHistory.forEach((pwd, index) => {
                         const item = document.createElement('div');
                         item.className = 'history-item';
@@ -1335,6 +1360,8 @@
                     });
                 } else {
                     passwordHistory.style.display = 'none';
+                    this.elements.toggleHistoryBtn.textContent = '📜 Show History';
+                    this.elements.toggleHistoryBtn.setAttribute('aria-label', 'Show password history');
                 }
             }
 
@@ -1515,7 +1542,7 @@
             handleKeyboardShortcuts(e) {
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-                const { generateBtn, copyBtn, regenerateBtn } = this.elements;
+                const { generateBtn, copyBtn, regenerateBtn, toggleHistoryBtn } = this.elements;
 
                 if ((e.code === 'Space' || e.key === 'Enter') && !generateBtn.disabled) {
                     e.preventDefault();
@@ -1551,7 +1578,7 @@
 
                 if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
                     e.preventDefault();
-                    this.clearHistory();
+                    this.toggleHistory();
                 }
             }
 
@@ -1699,6 +1726,7 @@
                                 <li>Double-click title for presets</li>
                                 <li>Click strength meter for analysis</li>
                                 <li>Click history password to copy</li>
+                                <li>Click "Show History" to view past passwords</li>
                             </ul>
                             <p><strong>Keyboard Shortcuts:</strong></p>
                             <ul style="margin: 0.5rem 0 1rem 1rem;">
@@ -1708,7 +1736,7 @@
                                 <li><kbd>Ctrl+1-9</kbd> - Set length quickly</li>
                                 <li><kbd>Alt+1-4</kbd> - Apply presets</li>
                                 <li><kbd>Escape</kbd> - Clear password</li>
-                                <li><kbd>Ctrl+H</kbd> - Clear history</li>
+                                <li><kbd>Ctrl+H</kbd> - Toggle history</li>
                             </ul>
                             <p><strong>Security Tips:</strong></p>
                             <ul style="margin: 0.5rem 0 1rem 1rem;">
@@ -1764,7 +1792,7 @@
             }
 
             resetState() {
-                const { passwordOutput, copyBtn, regenerateBtn } = this.elements;
+                const { passwordOutput, copyBtn, regenerateBtn, passwordHistory, toggleHistoryBtn } = this.elements;
                 this.currentPassword = '';
                 passwordOutput.textContent = 'Your secure password will appear here...';
                 passwordOutput.classList.remove('has-password');
@@ -1773,6 +1801,9 @@
                 regenerateBtn.style.display = 'none';
                 this.updateStrengthIndicator('');
                 this.updatePasswordHistory();
+                passwordHistory.style.display = 'none';
+                toggleHistoryBtn.textContent = '📜 Show History';
+                toggleHistoryBtn.setAttribute('aria-label', 'Show password history');
             }
         }
 
