@@ -152,6 +152,26 @@
             box-shadow: 0 0 20px rgba(0, 245, 160, 0.2);
         }
 
+        .password-output:hover::after {
+            content: 'Click to copy';
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 245, 160, 0.9);
+            color: var(--text-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .password-output.has-password:hover::after {
+            opacity: 1;
+        }
+
         .password-placeholder {
             color: rgba(255, 255, 255, 0.5);
             font-style: italic;
@@ -1237,10 +1257,6 @@
 
                     copyBtn.style.display = 'inline-block';
                     regenerateBtn.style.display = 'inline-block';
-
-                    this.copyToClipboard(this.currentPassword).then(success => {
-                        if (success) this.showCopyIndicator();
-                    }).catch(err => this.handleError(err, 'Auto-copy'));
 
                     generateBtn.innerHTML = '✅ Password Generated!';
                     generateBtn.classList.add('pulse');
