@@ -1,57 +1,1678 @@
-function toggleOption(optionId) {
-    const checkbox = document.getElementById(optionId);
-    const optionItem = checkbox.closest('.option-item');
-    
-    checkbox.checked = !checkbox.checked;
-    
-    if (checkbox.checked) {
-        optionItem.classList.add('active');
-    } else {
-        optionItem.classList.remove('active');
-    }
-
-    // Hanya periksa opsi wajib jika mengubah lowercase, uppercase, numbers, atau symbols
-    const requiredOptions = ['lowercase', 'uppercase', 'numbers', 'symbols'];
-    if (requiredOptions.includes(optionId)) {
-        const selectedCount = requiredOptions.filter(id => document.getElementById(id).checked).length;
-        if (selectedCount === 0) {
-            checkbox.checked = true;
-            optionItem.classList.add('active');
-            alert('At least one character type must be selected!');
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free Password Generator by VIN NESIA. Create strong, secure, and random passwords with customizable options. Perfect for creating safe accounts and protecting your data.">
+    <meta name="keywords" content="password generator, secure password, random password, strong password, password creator, security tool, VIN NESIA">
+    <meta property="og:title" content="PASSWORD GENERATOR VIN NESIA - Free Secure Password Creator">
+    <meta property="og:description" content="Generate strong and secure passwords instantly. Customizable length, characters, and security options available.">
+    <meta property="og:url" content="https://password.vinnesia.my.id">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://www.vinnesia.my.id/og-image.jpg">
+    <meta property="og:site_name" content="VIN NESIA">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PASSWORD GENERATOR VIN NESIA - Free Secure Password Creator">
+    <meta name="twitter:description" content="Generate strong and secure passwords instantly. Customizable length, characters, and security options available.">
+    <title>PASSWORD GENERATOR VIN NESIA - Professional Password Creator</title>
+    <link rel="icon" href="favicon.ico">
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3PYZXZFNER"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3PYZXZFNER');
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-    }
 
-    // Perbarui password jika ada perubahan
-    if (currentPassword) {
-        generateBtn.click();
-    }
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+            background: linear-gradient(135deg, #2d1b69 0%, #11998e 50%, #1a1a2e 100%);
+            background-attachment: fixed;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
 
-function getSelectedCharacters() {
-    let chars = '';
-    
-    if (document.getElementById('lowercase').checked) {
-        chars += characterSets.lowercase;
-    }
-    if (document.getElementById('uppercase').checked) {
-        chars += characterSets.uppercase;
-    }
-    if (document.getElementById('numbers').checked) {
-        chars += characterSets.numbers;
-    }
-    if (document.getElementById('symbols').checked) {
-        chars += characterSets.symbols;
-    }
+        /* Header Styles */
+        header {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    // Hapus karakter yang mirip jika opsi enabled
-    if (document.getElementById('similar').checked) {
-        chars = chars.split('').filter(char => !similarChars.includes(char)).join('');
-    }
+        .header-content {
+            display: flex;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 1rem;
+        }
 
-    // Hapus karakter ambigu jika opsi enabled
-    if (document.getElementById('ambiguous').checked) {
-        chars = chars.split('').filter(char => !ambiguousChars.includes(char)).join('');
-    }
+        header img {
+            height: 50px;
+            width: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
 
-    return chars || characterSets.lowercase + characterSets.uppercase; // Fallback minimal
-}
+        header h1 {
+            color: #00f5a0;
+            font-size: clamp(1.2rem, 3.5vw, 2rem);
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: -0.02em;
+        }
+
+        /* Main Container */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .container h2 {
+            color: #00f5a0;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Password Display */
+        .password-display {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .password-output {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: #ffffff;
+            word-break: break-all;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .password-output.has-password {
+            border-color: #00f5a0;
+            background: rgba(0, 245, 160, 0.1);
+            box-shadow: 0 0 20px rgba(0, 245, 160, 0.2);
+        }
+
+        .password-placeholder {
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
+        .copy-indicator {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #00f5a0;
+            color: #1a1a2e;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .copy-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Controls Section */
+        .controls-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-label {
+            color: #00f5a0;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Length Slider */
+        .length-control {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .slider {
+            flex: 1;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #00f5a0;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 245, 160, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 245, 160, 0.5);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #00f5a0;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 245, 160, 0.3);
+        }
+
+        .length-display {
+            background: rgba(0, 245, 160, 0.2);
+            border: 1px solid #00f5a0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #00f5a0;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Character Options */
+        .character-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .option-item.active {
+            background: rgba(0, 245, 160, 0.1);
+            border: 1px solid rgba(0, 245, 160, 0.3);
+        }
+
+        /* Custom Checkbox */
+        .checkbox-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .checkmark {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox:checked + .checkmark {
+            background: #00f5a0;
+            border-color: #00f5a0;
+            box-shadow: 0 0 10px rgba(0, 245, 160, 0.5);
+        }
+
+        .checkbox:checked + .checkmark::after {
+            content: '✓';
+            color: #1a1a2e;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .option-details {
+            flex: 1;
+        }
+
+        .option-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .option-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .option-example {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8rem;
+            color: #00f5a0;
+            background: rgba(0, 245, 160, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.25rem;
+            display: inline-block;
+        }
+
+        /* Password Strength Indicator */
+        .strength-indicator {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .strength-title {
+            color: #00f5a0;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .strength-bars {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .strength-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-bar.active {
+            background: #00f5a0;
+            box-shadow: 0 0 8px rgba(0, 245, 160, 0.5);
+        }
+
+        .strength-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .strength-weak { color: #ff6b6b; }
+        .strength-fair { color: #ffa726; }
+        .strength-good { color: #66bb6a; }
+        .strength-strong { color: #00f5a0; }
+
+        /* Button Styles */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        button {
+            background: linear-gradient(135deg, #00f5a0, #00d4aa);
+            color: #1a1a2e;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(0, 245, 160, 0.3);
+            min-width: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 245, 160, 0.4);
+            background: linear-gradient(135deg, #00d4aa, #00b894);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 16px rgba(0, 245, 160, 0.2);
+        }
+
+        .btn-primary {
+            font-size: 1.2rem;
+            padding: 1.25rem 2.5rem;
+            min-width: 200px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            box-shadow: 0 4px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5f4fcf, #8b7ff7);
+            box-shadow: 0 8px 24px rgba(108, 92, 231, 0.4);
+        }
+
+        /* Security Tips */
+        .security-tips {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tips-title {
+            color: #00f5a0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tip-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tip-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .tip-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #00f5a0;
+        }
+
+        .tip-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        footer a {
+            color: #00f5a0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin: 0 0.5rem;
+        }
+
+        footer a:hover {
+            color: #00d4aa;
+            text-shadow: 0 0 8px rgba(0, 245, 160, 0.5);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.5rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+            }
+
+            .header-content {
+                gap: 0.75rem;
+            }
+
+            header img {
+                height: 40px;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .password-output {
+                font-size: 1rem;
+                padding: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-info {
+                grid-template-columns: 1fr;
+                gap: 0.25rem;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .slider-container {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .length-display {
+                align-self: center;
+            }
+
+            .option-item {
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 0.5rem;
+                padding: 1rem;
+            }
+
+            .controls-section, .password-display, .security-tips {
+                padding: 1rem;
+            }
+
+            .password-output {
+                font-size: 0.9rem;
+                min-height: 50px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .loading::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #00f5a0;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="logo.png" alt="VIN NESIA Logo" onerror="this.style.display='none'">
+            <h1>PASSWORD GENERATOR VIN NESIA</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h2>🔐 Professional Password Generator</h2>
+            
+            <!-- Password Display -->
+            <div class="password-display">
+                <div class="password-output" id="passwordOutput">
+                    <span class="password-placeholder">Your secure password will appear here...</span>
+                </div>
+                <div class="copy-indicator" id="copyIndicator">Copied to Clipboard! ✓</div>
+            </div>
+
+            <!-- Controls Section -->
+            <div class="controls-section">
+                <div class="controls-grid">
+                    <!-- Length Control -->
+                    <div class="control-group">
+                        <label class="control-label">📏 Password Length</label>
+                        <div class="length-control">
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="lengthSlider" min="4" max="128" value="16">
+                                <div class="length-display" id="lengthDisplay">16</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Character Options -->
+                    <div class="control-group">
+                        <label class="control-label">🎛️ Character Options</label>
+                        <div class="character-options">
+                            <div class="option-item active" onclick="toggleOption('lowercase')">
+                                <div class="checkbox-container">
+                                    <input type="checkbox" class="checkbox" id="lowercase" checked>
+                                    <span class="checkmark"></span>
+                                </div>
+                                <div class="option-details">
+                                    <div class="option-title">Lowercase Letters</div>
+                                    <div class="option-description">Include a-z characters</div>
+                                    <div class="option-example">abcdefghijk</div>
+                                </div>
+                            </div>
+
+                            <div class="option-item active" onclick="toggleOption('uppercase')">
+                                <div class="checkbox-container">
+                                    <input type="checkbox" class="checkbox" id="uppercase" checked>
+                                    <span class="checkmark"></span>
+                                </div>
+                                <div class="option-details">
+                                    <div class="option-title">Uppercase Letters</div>
+                                    <div class="option-description">Include A-Z characters</div>
+                                    <div class="option-example">ABCDEFGHIJK</div>
+                                </div>
+                            </div>
+
+                            <div class="option-item active" onclick="toggleOption('numbers')">
+                                <div class="checkbox-container">
+                                    <input type="checkbox" class="checkbox" id="numbers" checked>
+                                    <span class="checkmark"></span>
+                                </div>
+                                <div class="option-details">
+                                    <div class="option-title">Numbers</div>
+                                    <div class="option-description">Include 0-9 digits</div>
+                                    <div class="option-example">0123456789</div>
+                                </div>
+                            </div>
+
+                            <div class="option-item active" onclick="toggleOption('symbols')">
+                                <div class="checkbox-container">
+                                    <input type="checkbox" class="checkbox" id="symbols" checked>
+                                    <span class="checkmark"></span>
+                                </div>
+                                <div class="option-details">
+                                    <div class="option-title">Special Symbols</div>
+                                    <div class="option-description">Include special characters</div>
+                                    <div class="option-example">!@#$%^&*()_+-=[]{}|;:,.<>?</div>
+                                </div>
+                            </div>
+
+                            <div class="option-item" onclick="toggleOption('similar')">
+                                <div class="checkbox-container">
+                                    <input type="checkbox" class="checkbox" id="similar">
+                                    <span class="checkmark"></span>
+                                </div>
+                                <div class="option-details">
+                                    <div class="option-title">Avoid Similar Characters</div>
+                                    <div class="option-description">Exclude easily confused characters</div>
+                                    <div class="option-example">Excludes: 0, O, l, 1, I</div>
+                                </div>
+                            </div>
+
+                            <div class="option-item" onclick="toggleOption('ambiguous')">
+                                <div class="checkbox-container">
+                                    <input type="checkbox" class="checkbox" id="ambiguous">
+                                    <span class="checkmark"></span>
+                                </div>
+                                <div class="option-details">
+                                    <div class="option-title">Avoid Ambiguous Characters</div>
+                                    <div class="option-description">Exclude characters that can be misread</div>
+                                    <div class="option-example">Excludes: {}[]()\/~,;.<></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Strength Indicator -->
+                <div class="strength-indicator">
+                    <div class="strength-title">
+                        🛡️ Password Strength
+                    </div>
+                    <div class="strength-bars" id="strengthBars">
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                        <div class="strength-bar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText">Click "Generate Password" to check strength</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button class="btn-primary" id="generateBtn">🔐 Generate Password</button>
+                <button class="btn-secondary" id="copyBtn" style="display: none;">📋 Copy Password</button>
+                <button class="btn-secondary" id="regenerateBtn" style="display: none;">🔄 Generate New</button>
+            </div>
+
+            <!-- Security Tips -->
+            <div class="security-tips">
+                <div class="tips-title">🛡️ Password Security Tips</div>
+                <div class="tips-grid">
+                    <div class="tip-item">
+                        <span class="tip-icon">🔒</span>
+                        <div class="tip-title">Use Unique Passwords</div>
+                        <div class="tip-description">Never reuse passwords across multiple accounts. Each account should have its own unique password.</div>
+                    </div>
+                    <div class="tip-item">
+                        <span class="tip-icon">📱</span>
+                        <div class="tip-title">Enable 2FA</div>
+                        <div class="tip-description">Use two-factor authentication whenever possible for an extra layer of security beyond just passwords.</div>
+                    </div>
+                    <div class="tip-item">
+                        <span class="tip-icon">🗂️</span>
+                        <div class="tip-title">Use Password Manager</div>
+                        <div class="tip-description">Store your passwords in a reputable password manager to keep them secure and easily accessible.</div>
+                    </div>
+                    <div class="tip-item">
+                        <span class="tip-icon">🔄</span>
+                        <div class="tip-title">Regular Updates</div>
+                        <div class="tip-description">Change passwords regularly, especially for important accounts like banking and email services.</div>
+                    </div>
+                    <div class="tip-item">
+                        <span class="tip-icon">🚫</span>
+                        <div class="tip-title">Avoid Personal Info</div>
+                        <div class="tip-description">Never use personal information like birthdays, names, or addresses in your passwords.</div>
+                    </div>
+                    <div class="tip-item">
+                        <span class="tip-icon">📏</span>
+                        <div class="tip-title">Length Matters</div>
+                        <div class="tip-description">Longer passwords are generally more secure. Aim for at least 12-16 characters when possible.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://www.vinnesia.my.id">🏠 Back to Homepage</a>
+                <a href="https://www.vinnesia.my.id/privacy">🔒 Privacy Policy</a>
+            </div>
+            
+            <div class="contact-info">
+                <div>📧 <a href="mailto:support@vinnesia.my.id">support@vinnesia.my.id</a></div>
+                <div>📱 <a href="https://instagram.com/vin.nesia.id">@vin.nesia.id</a></div>
+                <div>💬 WhatsApp: +62 895-3545-11777</div>
+                <div>📍 Indonesia</div>
+            </div>
+            
+            <p>© 2025 VIN NESIA. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global Variables
+        let currentPassword = '';
+        let passwordHistory = [];
+
+        // DOM Elements
+        const lengthSlider = document.getElementById('lengthSlider');
+        const lengthDisplay = document.getElementById('lengthDisplay');
+        const passwordOutput = document.getElementById('passwordOutput');
+        const copyIndicator = document.getElementById('copyIndicator');
+        const strengthBars = document.getElementById('strengthBars');
+        const strengthText = document.getElementById('strengthText');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const regenerateBtn = document.getElementById('regenerateBtn');
+
+        // Character Sets
+        const characterSets = {
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?~`'
+        };
+
+        const similarChars = '0O1lI';
+        const ambiguousChars = '{}[]()\\\/~,;.<>';
+
+        // Utility Functions
+        function getSelectedCharacters() {
+            let chars = '';
+            
+            if (document.getElementById('lowercase').checked) {
+                chars += characterSets.lowercase;
+            }
+            if (document.getElementById('uppercase').checked) {
+                chars += characterSets.uppercase;
+            }
+            if (document.getElementById('numbers').checked) {
+                chars += characterSets.numbers;
+            }
+            if (document.getElementById('symbols').checked) {
+                chars += characterSets.symbols;
+            }
+
+            // Hapus karakter yang mirip jika opsi enabled
+            if (document.getElementById('similar').checked) {
+                chars = chars.split('').filter(char => !similarChars.includes(char)).join('');
+            }
+
+            // Hapus karakter ambigu jika opsi enabled
+            if (document.getElementById('ambiguous').checked) {
+                chars = chars.split('').filter(char => !ambiguousChars.includes(char)).join('');
+            }
+
+            // Fallback jika tidak ada karakter tersisa
+            return chars || (characterSets.lowercase + characterSets.uppercase);
+        }
+
+        function generateSecurePassword(length, characters) {
+            if (!characters || length < 1) return '';
+            
+            let password = '';
+            const array = new Uint32Array(length);
+            window.crypto.getRandomValues(array);
+            
+            for (let i = 0; i < length; i++) {
+                password += characters[array[i] % characters.length];
+            }
+            
+            return password;
+        }
+
+        function calculatePasswordStrength(password) {
+            let score = 0;
+            
+            // Length scoring
+            if (password.length >= 8) score += 1;
+            if (password.length >= 12) score += 1;
+            if (password.length >= 16) score += 1;
+
+            // Character variety scoring
+            if (/[a-z]/.test(password)) score += 1;
+            if (/[A-Z]/.test(password)) score += 1;
+            if (/[0-9]/.test(password)) score += 1;
+            if (/[^A-Za-z0-9]/.test(password)) score += 1;
+
+            // Bonus for very long passwords
+            if (password.length >= 24) score += 1;
+
+            // Determine strength level
+            let strength = 'Very Weak';
+            let className = 'strength-weak';
+            
+            if (score >= 7) {
+                strength = 'Very Strong';
+                className = 'strength-strong';
+            } else if (score >= 5) {
+                strength = 'Strong';
+                className = 'strength-strong';
+            } else if (score >= 4) {
+                strength = 'Good';
+                className = 'strength-good';
+            } else if (score >= 2) {
+                strength = 'Fair';
+                className = 'strength-fair';
+            }
+
+            return { score: Math.min(score, 5), strength, className };
+        }
+
+        function updateStrengthIndicator(password) {
+            const result = calculatePasswordStrength(password || '');
+            const bars = strengthBars.querySelectorAll('.strength-bar');
+            
+            // Reset all bars
+            bars.forEach(bar => bar.classList.remove('active'));
+            
+            // Activate bars based on strength
+            for (let i = 0; i < result.score; i++) {
+                bars[i].classList.add('active');
+            }
+            
+            // Update text
+            strengthText.textContent = result.strength;
+            strengthText.className = `strength-text ${result.className}`;
+        }
+
+        function showCopyIndicator() {
+            copyIndicator.classList.add('show');
+            setTimeout(() => {
+                copyIndicator.classList.remove('show');
+            }, 2000);
+        }
+
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                const result = document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return result;
+            }
+        }
+
+        function toggleOption(optionId) {
+            const checkbox = document.getElementById(optionId);
+            const optionItem = checkbox.closest('.option-item');
+            
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                optionItem.classList.add('active');
+            } else {
+                optionItem.classList.remove('active');
+            }
+
+            // Hanya periksa opsi wajib untuk lowercase, uppercase, numbers, symbols
+            const requiredOptions = ['lowercase', 'uppercase', 'numbers', 'symbols'];
+            if (requiredOptions.includes(optionId)) {
+                const selectedCount = requiredOptions.filter(id => document.getElementById(id).checked).length;
+                if (selectedCount === 0) {
+                    checkbox.checked = true;
+                    optionItem.classList.add('active');
+                    alert('At least one character type must be selected!');
+                    return;
+                }
+            }
+
+            // Perbarui password jika ada perubahan
+            if (currentPassword) {
+                generateBtn.click();
+            }
+        }
+
+        function generateNewPassword() {
+            const characters = getSelectedCharacters();
+            const length = parseInt(lengthSlider.value);
+            
+            if (length < 4) {
+                alert('Password length must be at least 4 characters!');
+                return null;
+            }
+
+            return generateSecurePassword(length, characters);
+        }
+
+        // Event Listeners
+        lengthSlider.addEventListener('input', (e) => {
+            lengthDisplay.textContent = e.target.value;
+        });
+
+        generateBtn.addEventListener('click', () => {
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<div class="loading">🔐 Generating...</div>';
+            
+            const newPassword = generateNewPassword();
+            if (!newPassword) {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '🔐 Generate Password';
+                return;
+            }
+            
+            if (currentPassword) {
+                passwordHistory.push(currentPassword);
+                if (passwordHistory.length > 10) {
+                    passwordHistory.shift();
+                }
+            }
+
+            setTimeout(() => {
+                currentPassword = newPassword;
+                passwordOutput.textContent = currentPassword;
+                passwordOutput.classList.add('has-password');
+                updateStrengthIndicator(currentPassword);
+                copyBtn.style.display = 'inline-block';
+                regenerateBtn.style.display = 'inline-block';
+                
+                copyToClipboard(currentPassword).then(success => {
+                    if (success) showCopyIndicator();
+                }).catch(err => console.log('Auto-copy failed:', err));
+                
+                generateBtn.innerHTML = '✅ Password Generated!';
+                generateBtn.classList.add('pulse');
+                
+                setTimeout(() => {
+                    generateBtn.innerHTML = '🔐 Generate Password';
+                    generateBtn.disabled = false;
+                    generateBtn.classList.remove('pulse');
+                }, 1500);
+            }, 300);
+        });
+
+        copyBtn.addEventListener('click', async () => {
+            if (!currentPassword) {
+                alert('No password to copy! Please generate a password first.');
+                return;
+            }
+            
+            copyBtn.disabled = true;
+            copyBtn.innerHTML = '<div class="loading">📋 Copying...</div>';
+            
+            try {
+                const success = await copyToClipboard(currentPassword);
+                if (success) {
+                    copyBtn.innerHTML = '✅ Copied to Clipboard!';
+                    showCopyIndicator();
+                } else {
+                    throw new Error('Clipboard API failed');
+                }
+            } catch (error) {
+                console.error('Copy failed:', error);
+                copyBtn.innerHTML = '❌ Copy Failed';
+                const textarea = document.createElement('textarea');
+                textarea.value = currentPassword;
+                textarea.style.position = 'fixed';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    copyBtn.innerHTML = '✅ Copied!';
+                    showCopyIndicator();
+                } catch (fallbackError) {
+                    alert('Copy failed. Please manually select and copy the password.');
+                }
+                document.body.removeChild(textarea);
+            }
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = '📋 Copy Password';
+                copyBtn.disabled = false;
+            }, 2000);
+        });
+
+        regenerateBtn.addEventListener('click', () => {
+            if (regenerateBtn.disabled) return;
+            
+            regenerateBtn.disabled = true;
+            regenerateBtn.innerHTML = '<div class="loading">🔄 Regenerating...</div>';
+            
+            setTimeout(() => {
+                generateBtn.click();
+                setTimeout(() => {
+                    regenerateBtn.innerHTML = '🔄 Generate New';
+                    regenerateBtn.disabled = false;
+                }, 1000);
+            }, 200);
+        });
+
+        passwordOutput.addEventListener('click', async () => {
+            if (!currentPassword) {
+                generateBtn.click();
+                return;
+            }
+            
+            passwordOutput.style.transform = 'scale(0.98)';
+            passwordOutput.style.transition = 'transform 0.1s ease';
+            
+            setTimeout(() => {
+                passwordOutput.style.transform = 'scale(1)';
+            }, 100);
+            
+            try {
+                const success = await copyToClipboard(currentPassword);
+                if (success) showCopyIndicator();
+            } catch (error) {
+                console.error('Click-to-copy failed:', error);
+            }
+        });
+
+        passwordOutput.addEventListener('mouseenter', () => {
+            if (currentPassword) {
+                passwordOutput.style.cursor = 'pointer';
+                passwordOutput.title = 'Click to copy password';
+            }
+        });
+
+        passwordOutput.addEventListener('mouseleave', () => {
+            passwordOutput.style.cursor = 'default';
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            if (e.code === 'Space' || e.key === 'Enter') {
+                e.preventDefault();
+                if (!generateBtn.disabled) generateBtn.click();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'c' && currentPassword && !copyBtn.disabled) {
+                e.preventDefault();
+                copyBtn.click();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r' && currentPassword && !regenerateBtn.disabled) {
+                e.preventDefault();
+                regenerateBtn.click();
+            }
+            if (e.key >= '1' && e.key <= '9' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                const length = Math.min(parseInt(e.key) * 4, 128);
+                lengthSlider.value = length;
+                lengthDisplay.textContent = length;
+            }
+            if (e.altKey && e.key >= '1' && e.key <= '4') {
+                e.preventDefault();
+                applyPreset(parseInt(e.key) - 1);
+            }
+            if (e.key === 'Escape') {
+                currentPassword = '';
+                passwordOutput.innerHTML = '<span class="password-placeholder">Your secure password will appear here...</span>';
+                passwordOutput.classList.remove('has-password');
+                copyBtn.style.display = 'none';
+                regenerateBtn.style.display = 'none';
+                updateStrengthIndicator('');
+            }
+        });
+
+        function applyPreset(presetIndex) {
+            const presets = [
+                { name: 'Basic', length: 8, options: ['lowercase', 'uppercase', 'numbers'] },
+                { name: 'Standard', length: 12, options: ['lowercase', 'uppercase', 'numbers', 'symbols'] },
+                { name: 'Strong', length: 16, options: ['lowercase', 'uppercase', 'numbers', 'symbols'] },
+                { name: 'Ultra', length: 32, options: ['lowercase', 'uppercase', 'numbers', 'symbols'] }
+            ];
+
+            if (presetIndex < 0 || presetIndex >= presets.length) return;
+
+            const preset = presets[presetIndex];
+            
+            ['lowercase', 'uppercase', 'numbers', 'symbols', 'similar', 'ambiguous'].forEach(id => {
+                const checkbox = document.getElementById(id);
+                const optionItem = checkbox.closest('.option-item');
+                checkbox.checked = false;
+                optionItem.classList.remove('active');
+            });
+            
+            preset.options.forEach(option => {
+                const checkbox = document.getElementById(option);
+                const optionItem = checkbox.closest('.option-item');
+                checkbox.checked = true;
+                optionItem.classList.add('active');
+            });
+            
+            lengthSlider.value = preset.length;
+            lengthDisplay.textContent = preset.length;
+            
+            const toast = document.createElement('div');
+            toast.innerHTML = `✅ Applied ${preset.name} preset`;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(0, 245, 160, 0.9);
+                color: #1a1a2e;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 600;
+                z-index: 1000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+                generateBtn.click();
+            }, 1500);
+        }
+
+        let clickCount = 0;
+        document.querySelector('h2').addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 2) {
+                clickCount = 0;
+                showPresetDialog();
+            }
+            setTimeout(() => { clickCount = 0; }, 500);
+        });
+
+        function showPresetDialog() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease-out;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: rgba(255, 255, 255, 0.1);
+                    backdrop-filter: blur(16px);
+                    border-radius: 16px;
+                    padding: 2rem;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    color: white;
+                    text-align: center;
+                    max-width: 400px;
+                    width: 90%;
+                ">
+                    <h3 style="color: #00f5a0; margin-bottom: 1.5rem;">Choose Password Preset</h3>
+                    <div style="display: grid; gap: 1rem;">
+                        <button onclick="selectPreset(0)" style="
+                            background: rgba(0, 245, 160, 0.2);
+                            border: 1px solid #00f5a0;
+                            color: white;
+                            padding: 1rem;
+                            border-radius: 8px;
+                            cursor: pointer;
+                        ">📱 Basic (8 chars) - Lowercase, Uppercase, Numbers</button>
+                        <button onclick="selectPreset(1)" style="
+                            background: rgba(0, 245, 160, 0.2);
+                            border: 1px solid #00f5a0;
+                            color: white;
+                            padding: 1rem;
+                            border-radius: 8px;
+                            cursor: pointer;
+                        ">🔒 Standard (12 chars) - All characters</button>
+                        <button onclick="selectPreset(2)" style="
+                            background: rgba(0, 245, 160, 0.2);
+                            border: 1px solid #00f5a0;
+                            color: white;
+                            padding: 1rem;
+                            border-radius: 8px;
+                            cursor: pointer;
+                        ">🛡️ Strong (16 chars) - All characters</button>
+                        <button onclick="selectPreset(3)" style="
+                            background: rgba(0, 245, 160, 0.2);
+                            border: 1px solid #00f5a0;
+                            color: white;
+                            padding: 1rem;
+                            border-radius: 8px;
+                            cursor: pointer;
+                        ">🔐 Ultra (32 chars) - Maximum security</button>
+                        <button onclick="closePresetDialog()" style="
+                            background: rgba(255, 255, 255, 0.1);
+                            border: 1px solid rgba(255, 255, 255, 0.3);
+                            color: white;
+                            padding: 0.5rem;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            margin-top: 1rem;
+                        ">Cancel</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            window.selectPreset = (index) => {
+                applyPreset(index);
+                modal.remove();
+                delete window.selectPreset;
+                delete window.closePresetDialog;
+            };
+            
+            window.closePresetDialog = () => {
+                modal.remove();
+                delete window.selectPreset;
+                delete window.closePresetDialog;
+            };
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) window.closePresetDialog();
+            });
+        }
+
+        strengthText.addEventListener('click', () => {
+            if (currentPassword) {
+                showPasswordAnalysis(currentPassword);
+            } else {
+                alert('Generate a password first to see analysis!');
+            }
+        });
+
+        function showPasswordAnalysis(password) {
+            const analysis = analyzePasswordDetailed(password);
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease-out;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: rgba(255, 255, 255, 0.1);
+                    backdrop-filter: blur(16px);
+                    border-radius: 16px;
+                    padding: 2rem;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    color: white;
+                    max-width: 500px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                ">
+                    <h3 style="color: #00f5a0; margin-bottom: 1.5rem; text-align: center;">🔍 Password Analysis</h3>
+                    <div style="text-align: left; line-height: 1.6;">
+                        ${analysis}
+                    </div>
+                    <button onclick="this.closest('.modal').remove()" style="
+                        background: linear-gradient(135deg, #00f5a0, #00d4aa);
+                        color: #1a1a2e;
+                        border: none;
+                        padding: 0.75rem 1.5rem;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        margin: 1.5rem auto 0;
+                        display: block;
+                    ">Close Analysis</button>
+                </div>
+            `;
+            
+            modal.className = 'modal';
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        function analyzePasswordDetailed(password) {
+            const analysis = [];
+            const strength = calculatePasswordStrength(password);
+            
+            analysis.push(`<div style="margin-bottom: 1rem;"><strong>Overall Strength:</strong> <span style="color: ${strength.className === 'strength-strong' ? '#00f5a0' : strength.className === 'strength-good' ? '#66bb6a' : strength.className === 'strength-fair' ? '#ffa726' : '#ff6b6b'};">${strength.strength}</span></div>`);
+            analysis.push(`<div style="margin-bottom: 1rem;"><strong>Length:</strong> ${password.length} characters</div>`);
+            
+            const hasLower = /[a-z]/.test(password);
+            const hasUpper = /[A-Z]/.test(password);
+            const hasNumbers = /[0-9]/.test(password);
+            const hasSymbols = /[^A-Za-z0-9]/.test(password);
+            
+            analysis.push('<div style="margin-bottom: 1rem;"><strong>Character Types:</strong></div>');
+            analysis.push(`<div style="margin-left: 1rem;">• Lowercase letters: ${hasLower ? '✅ Yes' : '❌ No'}</div>`);
+            analysis.push(`<div style="margin-left: 1rem;">• Uppercase letters: ${hasUpper ? '✅ Yes' : '❌ No'}</div>`);
+            analysis.push(`<div style="margin-left: 1rem;">• Numbers: ${hasNumbers ? '✅ Yes' : '❌ No'}</div>`);
+            analysis.push(`<div style="margin-left: 1rem;">• Special characters: ${hasSymbols ? '✅ Yes' : '❌ No'}</div>`);
+            
+            const uniqueChars = new Set(password).size;
+            const uniqueness = (uniqueChars / password.length * 100).toFixed(1);
+            analysis.push(`<div style="margin: 1rem 0;"><strong>Character Uniqueness:</strong> ${uniqueChars}/${password.length} (${uniqueness}%)</div>`);
+            
+            const charset = (hasLower ? 26 : 0) + (hasUpper ? 26 : 0) + (hasNumbers ? 10 : 0) + (hasSymbols ? 32 : 0);
+            const combinations = Math.pow(charset, password.length);
+            let crackTime = 'Unknown';
+            if (combinations > 1e20) crackTime = 'Billions of years';
+            else if (combinations > 1e15) crackTime = 'Millions of years';
+            else if (combinations > 1e12) crackTime = 'Thousands of years';
+            else if (combinations > 1e9) crackTime = 'Years';
+            else if (combinations > 1e6) crackTime = 'Months';
+            else if (combinations > 1e3) crackTime = 'Days';
+            else crackTime = 'Minutes';
+            
+            analysis.push(`<div style="margin: 1rem 0;"><strong>Estimated crack time:</strong> ${crackTime}</div>`);
+            
+            analysis.push('<div style="margin: 1rem 0;"><strong>Recommendations:</strong></div>');
+            if (password.length < 12) analysis.push('<div style="margin-left: 1rem; color: #ffa726;">• Consider using at least 12 characters</div>');
+            if (!hasSymbols) analysis.push('<div style="margin-left: 1rem; color: #ffa726;">• Add special characters for better security</div>');
+            if (uniqueness < 80) analysis.push('<div style="margin-left: 1rem; color: #ffa726;">• Avoid repeated characters</div>');
+            if (strength.score >= 4) analysis.push('<div style="margin-left: 1rem; color: #00f5a0;">• Excellent password! Keep it secure.</div>');
+            
+            return analysis.join('');
+        }
+
+        function initializePasswordGenerator() {
+            lengthSlider.value = 16;
+            lengthDisplay.textContent = '16';
+            
+            ['lowercase', 'uppercase', 'numbers', 'symbols'].forEach(id => {
+                const checkbox = document.getElementById(id);
+                const optionItem = checkbox.closest('.option-item');
+                if (id !== 'similar' && id !== 'ambiguous') {
+                    checkbox.checked = true;
+                    optionItem.classList.add('active');
+                }
+            });
+            
+            setTimeout(() => {
+                generateBtn.click();
+            }, 1000);
+        }
+
+        function handleError(error, context) {
+            console.error(`Error in ${context}:`, error);
+            const errorToast = document.createElement('div');
+            errorToast.innerHTML = `❌ ${context} failed. Please try again.`;
+            errorToast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 107, 107, 0.9);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                font-weight: 600;
+                z-index: 1000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            document.body.appendChild(errorToast);
+            setTimeout(() => errorToast.remove(), 3000);
+        }
+
+        initializePasswordGenerator();
+
+        console.log('🔐 Enhanced Password Generator Shortcuts:');
+        console.log('Space/Enter: Generate password');
+        console.log('Ctrl/Cmd + C: Copy password');
+        console.log('Ctrl/Cmd + R: Regenerate password');
+        console.log('Ctrl + 1-9: Quick length setting');
+        console.log('Alt + 1-4: Apply presets');
+        console.log('Escape: Clear password');
+        console.log('Double-click title: Show preset dialog');
+        console.log('Click strength indicator: Show detailed analysis');
+        console.log('Click password: Copy to clipboard');
+        
+        const helpTooltip = document.createElement('div');
+        helpTooltip.innerHTML = '❓';
+        helpTooltip.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 245, 160, 0.2);
+            border: 2px solid #00f5a0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        `;
+        
+        helpTooltip.addEventListener('click', () => {
+            const helpContent = `
+                <h3 style="color: #00f5a0; margin-bottom: 1rem;">🔐 Password Generator Help</h3>
+                <div style="text-align: left; line-height: 1.6;">
+                    <p><strong>Quick Actions:</strong></p>
+                    <ul style="margin: 0.5rem 0 1rem 1rem;">
+                        <li>Click password to copy</li>
+                        <li>Double-click title for presets</li>
+                        <li>Click strength meter for analysis</li>
+                    </ul>
+                    <p><strong>Keyboard Shortcuts:</strong></p>
+                    <ul style="margin: 0.5rem 0 1rem 1rem;">
+                        <li><kbd>Space</kbd> or <kbd>Enter</kbd> - Generate</li>
+                        <li><kbd>Ctrl+C</kbd> - Copy password</li>
+                        <li><kbd>Ctrl+R</kbd> - Regenerate</li>
+                        <li><kbd>Ctrl+1-9</kbd> - Set length quickly</li>
+                        <li><kbd>Alt+1-4</kbd> - Apply presets</li>
+                        <li><kbd>Escape</kbd> - Clear password</li>
+                    </ul>
+                    <p><strong>Security Tips:</strong></p>
+                    <ul style="margin: 0.5rem 0 1rem 1rem;">
+                        <li>Use unique passwords for each account</li>
+                        <li>Longer passwords are generally stronger</li>
+                        <li>Include multiple character types</li>
+                        <li>Store passwords in a password manager</li>
+                    </ul>
+                </div>
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                animation: fadeIn 0.3s ease-out;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: rgba(255, 255, 255, 0.1);
+                    backdrop-filter: blur(16px);
+                    border-radius: 16px;
+                    padding: 2rem;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    color: white;
+                    max-width: 500px;
+                    width: 90%;
+                    max-height: 80vh;
+                    overflow-y: auto;
+                ">
+                    ${helpContent}
+                    <button onclick="this.closest('.modal').remove()" style="
+                        background: linear-gradient(135deg, #00f5a0, #00d4aa);
+                        color: #1a1a2e;
+                        border: none;
+                        padding: 0.75rem 1.5rem;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        margin: 1.5rem auto 0;
+                        display: block;
+                    ">Got it!</button>
+                </div>
+            `;
+            
+            modal.className = 'modal';
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        });
+        
+        helpTooltip.addEventListener('mouseenter', () => {
+            helpTooltip.style.transform = 'scale(1.1)';
+            helpTooltip.style.background = 'rgba(0, 245, 160, 0.3)';
+        });
+        
+        helpTooltip.addEventListener('mouseleave', () => {
+            helpTooltip.style.transform = 'scale(1)';
+            helpTooltip.style.background = 'rgba(0, 245, 160, 0.2)';
+        });
+        
+        document.body.appendChild(helpTooltip);
+
+        window.addEventListener('beforeunload', () => {
+            passwordHistory.length = 0;
+            currentPassword = '';
+        });
+    </script>
+</body>
+</html>
