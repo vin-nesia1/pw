@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Free Password Generator by VIN NESIA. Create strong, secure, and random passwords with customizable options. Perfect for creating safe accounts and protecting your data.">
-    <meta name="keywords" content="password generator, secure password, random password, strong password, password creator, security tool, VIN NESIA">
-    <meta property="og:title" content="PASSWORD GENERATOR VIN NESIA - Free Secure Password Creator">
-    <meta property="og:description" content="Generate strong and secure passwords instantly. Customizable length, characters, and security options available.">
+    <meta name="description" content="Free Password Generator by VIN NESIA. Create strong, secure, and random passwords with customizable options for all your accounts.">
+    <meta name="keywords" content="password generator, secure password, random password, strong password, password creator, VIN NESIA, password security">
+    <meta name="author" content="VIN NESIA">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="PASSWORD GENERATOR VIN NESIA - Secure Password Creator">
+    <meta property="og:description" content="Generate strong and secure passwords instantly with customizable length, characters, and security options.">
     <meta property="og:url" content="https://password.vinnesia.my.id">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://password.vinnesia.my.id/og-image.jpg">
     <meta property="og:site_name" content="VIN NESIA">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="PASSWORD GENERATOR VIN NESIA - Free Secure Password Creator">
-    <meta name="twitter:description" content="Generate strong and secure passwords instantly. Customizable length, characters, and security options available.">
+    <meta name="twitter:title" content="PASSWORD GENERATOR VIN NESIA - Secure Password Creator">
+    <meta name="twitter:description" content="Generate strong and secure passwords instantly with customizable length, characters, and security options.">
+    <meta name="twitter:image" content="https://password.vinnesia.my.id/og-image.jpg">
     <link rel="canonical" href="https://password.vinnesia.my.id">
     <title>PASSWORD GENERATOR VIN NESIA - Professional Password Creator</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preload" href="logo.png" as="image">
+    <link rel="stylesheet" href="https://kit.fontawesome.com/5ec31c46d7.js" crossorigin="anonymous">
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3PYZXZFNER"></script>
     <script>
@@ -25,6 +30,27 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-3PYZXZFNER');
+    </script>
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "VIN NESIA Password Generator",
+      "url": "https://password.vinnesia.my.id",
+      "description": "A free tool to generate strong, secure, and random passwords with customizable options.",
+      "applicationCategory": "SecurityApplication",
+      "operatingSystem": "All",
+      "creator": {
+        "@type": "Organization",
+        "name": "VIN NESIA",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "support@vinnesia.my.id",
+          "telephone": "+62895354511777"
+        }
+      }
+    }
     </script>
     <style>
         :root {
@@ -78,6 +104,7 @@
             width: auto;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            loading: lazy;
         }
 
         header h1 {
@@ -85,7 +112,6 @@
             font-size: clamp(1.2rem, 3.5vw, 2rem);
             font-weight: 700;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            letter-spacing: -0.02em;
         }
 
         /* Main Container */
@@ -195,6 +221,72 @@
         .copy-indicator.show {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Password History */
+        .password-history {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-light);
+        }
+
+        .history-title {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .history-password {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 1rem;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .history-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-light);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .history-btn:hover {
+            background: var(--primary-color);
+            color: var(--text-dark);
         }
 
         /* Controls Section */
@@ -577,6 +669,19 @@
             font-size: 0.9rem;
         }
 
+        .instagram-icon {
+            font-size: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+            margin-right: 0.5rem;
+        }
+
         /* Modal Styles */
         .modal {
             position: fixed;
@@ -732,6 +837,10 @@
                 padding: 1.5rem;
                 max-width: 90%;
             }
+
+            .history-list {
+                max-height: 150px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -740,13 +849,24 @@
                 padding: 1rem;
             }
 
-            .controls-section, .password-display, .security-tips {
+            .controls-section, .password-display, .password-history, .security-tips {
                 padding: 1rem;
             }
 
             .password-output {
                 font-size: 0.9rem;
                 min-height: 50px;
+            }
+
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .history-actions {
+                width: 100%;
+                justify-content: space-between;
             }
         }
 
@@ -796,7 +916,7 @@
 
         /* Fallback for unsupported backdrop-filter */
         @supports not (backdrop-filter: blur(10px)) {
-            .container, .password-display, .controls-section, .security-tips, header, footer, .modal-content {
+            .container, .password-display, .controls-section, .password-history, .security-tips, header, footer, .modal-content {
                 background: rgba(0, 0, 0, 0.8);
             }
         }
@@ -805,7 +925,7 @@
 <body>
     <header>
         <div class="header-content">
-            <img src="logo.png" alt="VIN NESIA Logo" onerror="this.src='fallback-logo.png'">
+            <img src="logo.png" alt="VIN NESIA Logo" loading="lazy" onerror="this.src='fallback-logo.png'">
             <h1>PASSWORD GENERATOR VIN NESIA</h1>
         </div>
     </header>
@@ -820,6 +940,13 @@
                     <span class="password-placeholder">Your secure password will appear here...</span>
                 </output>
                 <div class="copy-indicator" id="copyIndicator" role="alert">Copied to Clipboard! ✓</div>
+            </div>
+
+            <!-- Password History -->
+            <div class="password-history" id="passwordHistory" style="display: none;">
+                <div class="history-title">📜 Password History</div>
+                <div class="history-list" id="historyList"></div>
+                <button class="history-btn" id="clearHistoryBtn" style="margin-top: 1rem;">Clear History</button>
             </div>
 
             <!-- Controls Section -->
@@ -986,7 +1113,7 @@
             
             <div class="contact-info">
                 <div>📧 <a href="mailto:support@vinnesia.my.id">support@vinnesia.my.id</a></div>
-                <div>📱 <a href="https://instagram.com/vin.nesia.id">@vin.nesia.id</a></div>
+                <div><i class="fab fa-instagram instagram-icon" aria-hidden="true"></i> <a href="https://instagram.com/vin.nesia.id">@vin.nesia.id</a></div>
                 <div>💬 WhatsApp: +62 895-3545-11777</div>
                 <div>📍 Indonesia</div>
             </div>
@@ -1014,7 +1141,10 @@
                     regenerateBtn: document.getElementById('regenerateBtn'),
                     title: document.getElementById('title'),
                     helpTooltip: document.getElementById('helpTooltip'),
-                    optionItems: document.querySelectorAll('.option-item')
+                    optionItems: document.querySelectorAll('.option-item'),
+                    passwordHistory: document.getElementById('passwordHistory'),
+                    historyList: document.getElementById('historyList'),
+                    clearHistoryBtn: document.getElementById('clearHistoryBtn')
                 };
 
                 // Character Sets
@@ -1048,11 +1178,10 @@
             initialize() {
                 this.bindEvents();
                 this.resetState();
-                setTimeout(() => this.generatePassword(), 1000);
             }
 
             bindEvents() {
-                const { lengthSlider, lengthDisplay, passwordOutput, generateBtn, copyBtn, regenerateBtn, strengthText, title, helpTooltip, optionItems } = this.elements;
+                const { lengthSlider, lengthDisplay, passwordOutput, generateBtn, copyBtn, regenerateBtn, strengthText, title, helpTooltip, optionItems, clearHistoryBtn } = this.elements;
 
                 lengthSlider.addEventListener('input', () => {
                     lengthDisplay.textContent = lengthSlider.value;
@@ -1064,6 +1193,7 @@
                 regenerateBtn.addEventListener('click', () => this.regeneratePassword());
                 strengthText.addEventListener('click', () => this.showPasswordAnalysis());
                 helpTooltip.addEventListener('click', () => this.showHelpDialog());
+                clearHistoryBtn.addEventListener('click', () => this.clearHistory());
 
                 passwordOutput.addEventListener('click', () => this.handlePasswordOutputClick());
                 passwordOutput.addEventListener('mouseenter', () => {
@@ -1174,6 +1304,61 @@
                 strengthText.className = `strength-text ${result.className}`;
             }
 
+            updatePasswordHistory() {
+                const { passwordHistory, historyList } = this.elements;
+                historyList.innerHTML = '';
+                if (this.passwordHistory.length > 0) {
+                    passwordHistory.style.display = 'block';
+                    this.passwordHistory.forEach((pwd, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'history-item';
+                        item.innerHTML = `
+                            <span class="history-password" role="button" tabindex="0" aria-label="Copy password ${pwd}">${pwd}</span>
+                            <div class="history-actions">
+                                <button class="history-btn copy-history" data-index="${index}">Copy</button>
+                                <button class="history-btn delete-history" data-index="${index}">Delete</button>
+                            </div>
+                        `;
+                        historyList.appendChild(item);
+
+                        const passwordSpan = item.querySelector('.history-password');
+                        passwordSpan.addEventListener('click', () => this.copyPasswordFromHistory(pwd));
+                        passwordSpan.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                this.copyPasswordFromHistory(pwd);
+                            }
+                        });
+
+                        item.querySelector('.copy-history').addEventListener('click', () => this.copyPasswordFromHistory(pwd));
+                        item.querySelector('.delete-history').addEventListener('click', () => this.deletePasswordFromHistory(index));
+                    });
+                } else {
+                    passwordHistory.style.display = 'none';
+                }
+            }
+
+            async copyPasswordFromHistory(password) {
+                try {
+                    const success = await this.copyToClipboard(password);
+                    if (success) this.showCopyIndicator();
+                } catch (err) {
+                    this.handleError(err, 'Copy from history');
+                }
+            }
+
+            deletePasswordFromHistory(index) {
+                this.passwordHistory.splice(index, 1);
+                this.updatePasswordHistory();
+                this.showToast('✅ Password removed from history');
+            }
+
+            clearHistory() {
+                this.passwordHistory = [];
+                this.updatePasswordHistory();
+                this.showToast('✅ Password history cleared');
+            }
+
             async copyToClipboard(text) {
                 try {
                     await navigator.clipboard.writeText(text);
@@ -1245,6 +1430,7 @@
                     if (this.passwordHistory.length > this.maxHistoryLength) {
                         this.passwordHistory.shift();
                     }
+                    this.updatePasswordHistory();
                 }
 
                 setTimeout(() => {
@@ -1361,6 +1547,11 @@
 
                 if (e.key === 'Escape') {
                     this.resetState();
+                }
+
+                if ((e.ctrlKey || e.metaKey) && e.key === 'h') {
+                    e.preventDefault();
+                    this.clearHistory();
                 }
             }
 
@@ -1507,6 +1698,7 @@
                                 <li>Click password to copy</li>
                                 <li>Double-click title for presets</li>
                                 <li>Click strength meter for analysis</li>
+                                <li>Click history password to copy</li>
                             </ul>
                             <p><strong>Keyboard Shortcuts:</strong></p>
                             <ul style="margin: 0.5rem 0 1rem 1rem;">
@@ -1516,6 +1708,7 @@
                                 <li><kbd>Ctrl+1-9</kbd> - Set length quickly</li>
                                 <li><kbd>Alt+1-4</kbd> - Apply presets</li>
                                 <li><kbd>Escape</kbd> - Clear password</li>
+                                <li><kbd>Ctrl+H</kbd> - Clear history</li>
                             </ul>
                             <p><strong>Security Tips:</strong></p>
                             <ul style="margin: 0.5rem 0 1rem 1rem;">
@@ -1579,6 +1772,7 @@
                 copyBtn.style.display = 'none';
                 regenerateBtn.style.display = 'none';
                 this.updateStrengthIndicator('');
+                this.updatePasswordHistory();
             }
         }
 
